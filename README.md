@@ -1,17 +1,13 @@
-# JupyterLab Astronomy Picture of the Day extension
+# JupyterLab Hello World Vue.js extension
 
-Show a random NASA Astronomy Picture of the Day.
+Shows "Hello World"
 
+![JupyterLab Hello World Vue.js](HelloWorld.png "JupyterLab Hello World Vue.js extension")
 
 ## Prerequisites
 
 * JupyterLab
 
-## Installation
-
-```bash
-jupyter labextension install @jupyterlab/jupyterlab_apod
-```
 
 ## Development
 

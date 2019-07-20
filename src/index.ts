@@ -2,109 +2,50 @@ import {ILayoutRestorer, JupyterFrontEnd, JupyterFrontEndPlugin} from '@jupyterl
 import {ICommandPalette, MainAreaWidget, WidgetTracker} from '@jupyterlab/apputils';
 import {Message} from '@phosphor/messaging';
 import {Widget} from '@phosphor/widgets';
+import Vue from 'vue';
+import Hello from './Hello.vue'
 
 
-interface APODResponse {
-    copyright: string;
-    date: string;
-    explanation: string;
-    media_type: 'video' | 'image';
-    title: string;
-    url: string;
-};
-
-class APODWidget extends Widget {
+class HelloVue extends Widget {
     /**
-     * Construct a new APOD widget.
+     * Construct a new HelloVue widget.
      */
     constructor() {
         super();
-
-        this.addClass('my-apodWidget'); // new line
-
-        // Add an image element to the panel
-        this.img = document.createElement('img');
-        this.node.appendChild(this.img);
-
-        // Add a summary element to the panel
-        this.summary = document.createElement('p');
-        this.node.appendChild(this.summary);
     }
-
-    /**
-     * The image element associated with the widget.
-     */
-    readonly img: HTMLImageElement;
-
-    /**
-     * The summary text element associated with the widget.
-     */
-    readonly summary: HTMLParagraphElement;
 
     /**
      * Handle update requests for the widget.
      */
     async onUpdateRequest(msg: Message): Promise<void> {
-
-        const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=${this.randomDate()}`);
-
-        if (!response.ok) {
-            const data = await response.json();
-            if (data.error) {
-                this.summary.innerText = data.error.message;
-            } else {
-                this.summary.innerText = response.statusText;
-            }
-            return;
-        }
-
-        const data = await response.json() as APODResponse;
-
-        if (data.media_type === 'image') {
-            // Populate the image
-            this.img.src = data.url;
-            this.img.title = data.title;
-            this.summary.innerText = data.title;
-            if (data.copyright) {
-                this.summary.innerText += ` (Copyright ${data.copyright})`;
-            }
-        } else {
-            this.summary.innerText = 'Random APOD fetched was not an image.';
-        }
-    }
-
-    /**
-     * Get a random date string in YYYY-MM-DD format.
-     */
-    randomDate(): string {
-        const start = new Date(2010, 1, 1);
-        const end = new Date();
-        const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-        return randomDate.toISOString().slice(0, 10);
+        new Vue({
+            el: this.node,
+            render: h => h(Hello)
+        })
     }
 }
 
 
 /**
- * Activate the APOD widget extension.
+ * Activate the HelloVue widget extension.
  */
 function activate(app: JupyterFrontEnd, palette: ICommandPalette, restorer: ILayoutRestorer) {
-    console.log('JupyterLab extension jupyterlab_apod is activated!');
+    console.log('JupyterLab extension jupyterlab_vue is activated!');
 
     // Declare a widget variable
-    let widget: MainAreaWidget<APODWidget>;
+    let widget: MainAreaWidget<HelloVue>;
 
     // Add an application command
-    const command: string = 'apod:open';
+    const command: string = 'vue:open';
     app.commands.addCommand(command, {
-        label: 'Random Astronomy Picture',
+        label: 'Hello World Vue.js',
         execute: () => {
             if (!widget) {
                 // Create a new widget if one does not exist
-                const content = new APODWidget();
+                const content = new HelloVue();
                 widget = new MainAreaWidget({content});
-                widget.id = 'apod-jupyterlab';
-                widget.title.label = 'Astronomy Picture';
+                widget.id = 'vue-jupyterlab';
+                widget.title.label = 'Hello World Vue.js';
                 widget.title.closable = true;
             }
             if (!tracker.has(widget)) {
@@ -123,23 +64,23 @@ function activate(app: JupyterFrontEnd, palette: ICommandPalette, restorer: ILay
     });
 
     // Add the command to the palette.
-    palette.addItem({command, category: 'Tutorial'});
+    palette.addItem({command, category: 'Hello World Vue.js'});
 
     // Track and restore the widget state
-    let tracker = new WidgetTracker<MainAreaWidget<APODWidget>>({
-        namespace: 'apod'
+    let tracker = new WidgetTracker<MainAreaWidget<HelloVue>>({
+        namespace: 'vue'
     });
     restorer.restore(tracker, {
         command,
-        name: () => 'apod'
+        name: () => 'vue'
     });
 }
 
 /**
- * Initialization data for the jupyterlab_apod extension.
+ * Initialization data for the jupyterlab_vue extension.
  */
 const extension: JupyterFrontEndPlugin<void> = {
-    id: 'jupyterlab_apod',
+    id: 'jupyterlab_vue',
     autoStart: true,
     requires: [ICommandPalette, ILayoutRestorer],
     activate: activate
