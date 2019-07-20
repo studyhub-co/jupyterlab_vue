@@ -22,23 +22,29 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/my_name/jupyterlab_apod.git"
+    "url": "https://github.com/nscozzaro/jupyterlab_vue.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "prepare": "npm run clean && npm run build",
     "watch": "tsc -w"
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@jupyterlab/application": "^1.0.0-rc.0",
     "@jupyterlab/apputils": "^1.0.0-rc.0",
     "@phosphor/messaging": "^1.2.3",
-    "@phosphor/widgets": "^1.8.1"
-  },
-  "devDependencies": {
+    "@phosphor/widgets": "^1.8.1",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.1.0",
     "rimraf": "^2.6.1",
-    "typescript": "~3.5.2"
+    "ts-loader": "^6.0.4",
+    "typescript": "~3.5.2",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-node-externals": "^1.7.2"
   },
   "jupyterlab": {
     "extension": true
